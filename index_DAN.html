@@ -6,10 +6,11 @@
         <style type="text/css">
             html { height: 100% }
             body { height: 100%; margin: 0; padding: 0 }
+            //a div called map_placer
             #map_placer { height: 100%; width: 100%; }
         </style>
-        //<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDsujp7vdVRPj7B5pZwdr4ZShABgVdNrCU&sensor=true"></script>
-        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDB9jj_nxgW89BoYRZW9HvU77PfCmuBGGc&sensor=true"></script>
+      <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDsujp7vdVRPj7B5pZwdr4ZShABgVdNrCU&sensor=true"></script>
+     //   <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDB9jj_nxgW89BoYRZW9HvU77PfCmuBGGc&sensor=true"></script>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript">
             //Add event listener to run when the device is ready
@@ -17,11 +18,14 @@
             
             //Device is ready, Get geolocation data 
             function onDeviceReady() {
-                navigator.geolocation.getCurrentPosition(onSuccess,onError);
+            //2 callback functions: onSuccess and onError    
+            navigator.geolocation.getCurrentPosition(onSuccess,onError);
             }
             
             //If successful, get position data
             function onSuccess(position) {
+                //instantiating a new map object
+  /*6:46 geolocation video*/
                 var latLng = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
                 //Select map options
                 var mapOptions = {
@@ -32,9 +36,9 @@
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
                 //this is our DIV
-               var mapContent = document.getElementById('map_placer');
-              var map = new google.maps.Map(mapContent,mapOptions);
-             //   var map = new google.maps.Map(document.getElementById('map_placer'),mapOptions);
+               // var mapContent = document.getElementById('map_placer');
+                //var map = new google.maps.Map(mapContent,mapOptions);
+                var map = new google.maps.Map(document.getElementById('map_placer'),mapOptions);
                 //curly braces are for values
                 var marker = new google.maps.Marker({position: latLng,map: map});
             }
