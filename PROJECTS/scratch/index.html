@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PhoneGap Capture API</title>
+	<style type="text/css">
+ 		button {background:#333;color:#fff;border-radius:10px;border:#666 2px solid;padding:5px 10px;}
+	</style>
+    <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        /**
+         * Capture API can capture pictures, audio, and video
+         * based on WC3 mediaCapture API    (vs. camera API is not)
+         */
+        //step one create the Take Picture Function
+        function takePicture(){
+            //this will take a couple call backs
+            //these then become the two functions to create below
+            navigator.device.capture.captureImage(captureSuccess,captureErr);
+            
+        }
+        
+        function captureSuccess(mediaFiles){
+            var i, len;
+            //increment by one after each iteration
+            //len is set to however many files there are
+            for (i = 0, len = mediaFiles.length, i<len; i+=1){
+                //this is how we can upload multiple images
+                uploadFile(mediaFiles[i]);
+            }
+        }
+        
+        
+        
+        function captureErr (error){
+            
+        }
+            </script>
+    </head>
+    <body>
+        // button with an onclick handler to the Take Picture function
+        <button onclick="takePicture();">Take Picture</button> <br>
+    </body>
+</html>

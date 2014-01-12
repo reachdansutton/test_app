@@ -1,79 +1,111 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="user-scalable=no,initial-scale=1, maximum-scale=1,minimum-scale=1, width=device-width" />
         <title>PhoneGap Application</title>
-        <style>button{background:#333;color:#fff;border-radius:10px;border:2px #666 solid; padding:5px 10px;}</style>>
-        <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+        <link rel="stylesheet" href="css/jquery.mobile-1.3.2.css" />
+        <script src="js/jquery-1.10.2.min.js"></script>
+        <script src="js/jquery.mobile-1.3.2.min.js"></script>  
+        <script src="cordova.js"></script>
         <script type="text/javascript">
-                    function takePicture() {
-                    navigator.device.capture.captureImage(captureSuccess, captureError);
-                    }
+            //Add event listener to run when the device is ready
+            document.addEventListener("deviceready", onDeviceReady, false);
 
-            /*
-             * API Variation .. compare with how it is here:
-             * http://docs.phonegap.com/en/3.0.0/cordova_media_capture_capture.md.html#Capture
-             * // capture callback
-             var captureSuccess = function(mediaFiles) {
-             var i, path, len;
-             for (i = 0, len = mediaFiles.length; i < len; i += 1) {
-             path = mediaFiles[i].fullPath;
-             // do something interesting with the file
-             }
-             };
-             * 
-             */
+            //Device is ready
+            function onDeviceReady() {
+                //since we're using it before the script below 
+                //we will need a document ready 
+                $(document).ready(function() {
+                    //we need to look at the button and since we are using
+                    //id=saveBtn we need to use saveBtn to grab onto that using jQuery
+                    //..since it's an "id" we need to use a hashtag
 
-
-
-            function captureSuccess(mediaFiles) {
-            var i, len;
-                    //"i+=1" is increment by 1 after each iteration
-                    //setting i to zero
-                    //setting len to length of the file.. however many files there are
-                    //as long as i is less than the amount of the files then we are going 
-                    //..to do whatever it is we are going to do in this loop
-                    //then we are going to increment by 1
-                    for (i = 0, len = mediaFiles.length; i < len; i += 1) {
-            //call the upload file function
-            //upload multiple images in one API call
-            uploadFile(mediaFiles[i]);
-            }
+                    $('#saveBtn').bind('click', function() {
+                        //call another function called saveContact();
+                        saveContact();
+                        //so now this bind function saveContact
+                        //so now we need to write that next
+                    });
+                });
             }
 
-            //will take an error opbject
-            function captureError(error) {
-            //concatenate on the error code
-            var errMsg = 'An Error has occured ' + error.code;
-                    //use the devices internal notification system
-                    //dialgue box
-                    navigator.notification.alert(errMsg, null, 'oh No!');
+            
+            function saveContact(){
+                //console log is great for debugging so they 
+                //are not required
+                console.log("Getting Contact Info...");
+                //Create variables from input
+                //so everything we input in that form is going to be caught in a variable
+                
+                //we need to have a ".value" if we want the actual text that typed into the field
+                var firstName = document.getElementById('firstName').value;
+                var lastName = document.getElementById('lastName').value;
+                var fullName = firstName +' ' +lastName;
+                var note = document.getElementById('note').value;
+                var emailAddress = document.getElementById('email').value;
+                
+                
+                //create another variable which will be the contact object
+                //put a JSON value which will be the display name
+                var theContact = navigator.contacts.create(("displayName" : fullName));  
+                
+                //note field
+                theContact.note = note;
+                
+                //empty array
+                //Email Field
+                var emails = [];
+                emails[0] = new ContactField('email',emailAddress,false);
+                
+                //call save method
+                theContact.save(onSaveSuccess,onSaveError);
             }
-
-
-            //upload file function which gets called in this method: captureSuccess
-            function uploadFile(mediaFile) {
-            //create new file transfer object...
-            //so we can xfer the file to a remote server
-            var ft = new FileTransfer(),
-                    path = mediaFile.fullPath,
-                    name = mediaFile.name;
-                    //take the ft object..
-            ft.upload(
-                    path,
-                    //location of remote server
-                    "http://tricklearningcenter.com/test/upload.php",
-                    //ftp://tricklearningcenterc@ftp.ipage.com/test/upload
-                    function(result){
-                            console.log('File Upload: Success!');
-                    },
-                    function(error){
-                        console.log('File Upload: Failed');
-                    },
-                            {fileName: name});
+           
+           
+           //Contact Added
+           function onSaveSuccess(){
+               //this console log is for us the user won't see it
+                console.log('Contact Saved');
+                alert('your contact has been saved');
+               
+               
+           }
+           
+            //There was an error
+            function onSaveError(error){
+                console.log('Error: '+error.code);
+                alert('Error: '+error.code);
             }
+           
+           
+
         </script>
     </head>
     <body>
-        <button onclick="takePicture();">Take Picture </button>
+        <div data-role="page">
+            <div data-role="header">
+                <h2> Add Contact</h2>
+            </div>
+
+            <div data-role="content">
+
+
+                <form>
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" />
+                    <label for="lastName">Last Name </label>
+                    <input type="text" id="lastName" />
+                    <label for="email">Email</label>
+                    <input type="text" id="email" />
+                    <label for="note">Note </label>
+                    <textarea id="note"></textarea>
+                    <input type="button" name="save" id="saveBtn" value="Save Contact" />
+                </form>
+            </div>
+            <div data-role="footer">
+                <h4>Copyright &copy; 2014 </h4>
+
+            </div>
+        </div>
     </body>
 </html>

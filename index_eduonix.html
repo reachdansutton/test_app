@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="user-scalable=no,initial-scale=1, maximum-scale=1,minimum-scale=1, width=device-width" />
+        <title>PhoneGap Application</title>
+        <link rel="stylesheet" href="css/jquery.mobile-1.3.2.css" />
+        <script src="js/jquery-1.10.2.min.js"></script>
+        <script src="js/jquery.mobile-1.3.2.min.js"></script>  
+        <script src="cordova.js"></script>
+        <script type="text/javascript">
+            //Add event listener to run when the device is ready
+            document.addEventListener("deviceready", onDeviceReady, false);
+
+            //Device is ready
+            function onDeviceReady() {
+               $(document).ready(function(){
+                   $('#saveBtn').bind('click',function(){
+                       saveContact();
+                   });
+               });
+            }     
+            
+            function saveContact(){
+                console.log('Getting Contact Info...');
+                //Create variables from form input
+                var firstName    = document.getElementById('firstName').value;
+                var lastName     = document.getElementById('lastName').value;
+                var fullName     = document.getElementById('firstName').value+' '+document.getElementById('lastName').value;
+                var note         = document.getElementById('note').value
+                var emailAddress = document.getElementById('email').value
+                
+                //Create contact object
+                var theContact = navigator.contacts.create({"displayName" : fullName});
+                //
+                //Note Field
+                theContact.note = note;
+                
+                //Email Field
+                var emails = [];
+                emails[0] = new ContactField('email', emailAddress, false); 
+                theContact.emails = emails;
+                
+                //Save contact info   
+                theContact.save(onSaveSuccess,onSaveError);             
+            }
+            
+            function onSaveSuccess(contact){
+                alert('Your Contact Has Been Saved');
+            }
+            
+            function onSaveError(error){
+                alert('Error: '+ error.code);
+            }
+                                
+        </script>
+    </head>
+    <body>
+        <div data-role="page">
+            <div data-role="header">
+                <h1>My Application</h1>
+            </div><!-- /header -->
+
+            <div data-role="content">	
+                <form>
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" />
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" />
+                    <label for="email">Email Address</label>
+                    <input type="text" id="email" />
+                    <label for="note">Note</label>
+                    <textarea id="note"></textarea>
+                    <input type="button" name="save" id="saveBtn" value="Save Contact" />
+                </form>
+            </div><!-- /content -->
+            
+            <div id="footer" data-role="footer">
+                <h4>Copyright &copy; 2013</h4>
+            </div><!-- /footer -->
+            
+        </div><!-- /page -->
+    </body>
+</html>

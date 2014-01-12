@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PhoneGap Capture API</title>
+	<style type="text/css">
+ 		button {background:#333;color:#fff;border-radius:10px;border:#666 2px solid;padding:5px 10px;}
+	</style>
+    <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+    //If Success
+    function captureSuccess(mediaFiles) {
+        var i, len;
+        for (i = 0, len = mediaFiles.length; i < len; i += 1) {
+            uploadFile(mediaFiles[i]);
+        }
+ 
+    }
+
+    //If Error
+    function captureError(error) {
+        var errMsg = 'An error occurred during capture: ' + error.code;
+        navigator.notification.alert(errMsg, null, 'Uh oh!');
+        alert('error');
+    }
+
+    //Call With Button
+    function takePicture() {
+        navigator.device.capture.captureImage(captureSuccess, captureError);
+    }
+
+    //Upload To Server
+    function uploadFile(mediaFile) {
+        var ft = new FileTransfer(),
+            path = mediaFile.fullPath,
+            name = mediaFile.name;
+
+        ft.upload(path,
+            "http://techguystaging.com/test/upload.php",
+            function(result) {
+                console.log('Upload success: ' + result.responseCode);
+                console.log(result.bytesSent + ' bytes sent');
+            },
+            function(error) {
+                console.log('Error uploading image ' + path + ': ' + error.code);
+            },
+            { fileName: name });
+    }
+
+    </script>
+    </head>
+    <body>
+        <button onclick="takePicture();">Take Picture</button> <br>
+    </body>
+</html>

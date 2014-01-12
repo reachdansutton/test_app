@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PhoneGap Application</title>
+        <style>
+          body{background:#000000;color:#ffffff;}
+        #recordBtn{
+            display:block;
+            border-radius:50%;
+            width:100px;
+            height:100px;
+            background:red;
+            color:#ffffff;
+            margin: 30px auto;
+        }
+        </style>
+        <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+        <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+        <script type="text/javascript">
+            //set to nothing
+            var audioCapture = '';
+            // Wait for PhoneGap to load
+            document.addEventListener("deviceready", onDeviceReady, false);
+
+            // when PhoneGap is ready ..this function will run
+            function onDeviceReady() {
+                audioCapture = navigator.device.capture;
+                //in order for the recording app to start up 
+                //..we need to bind a function 
+                //..we do this when the button is clicked on using jQuery
+                //jQuery selector
+                //use a hashtag # b/c we are grabbing the id of recordBtn
+                //use the bind event
+                //could use start but touchstart is smother
+                $('#recordBtn').bind('touchstart',function(){
+                    getAudio();
+                });
+            }
+
+            function getAudio(){
+                audioCapture.captureAudio(onCaptureSuccess,onCaptureError,{limit: 1});
+            }
+
+
+            function onCaptureSuccess(audioObject){
+                var i, output = '';
+                for (i=0; i<audioObject.length; i++){
+                    //+= will append whatever we want
+                    //the [i] is the placeholder for whatever object we are on
+                    output += 'name:  '+ audioObject[i].name + '<br />' +
+                            'Full Path: ' + audioObject[i].fullpath + '<br / >'+
+                            'Type: ' + audioObject[i].type + '<br / >'+
+                            'Create On: ' + new Date(audioObject[i].lastModifiedDate) + '<br / >'+
+                            'Size: ' + audioObject[i].size + '<br / >';
+                    
+                    // now we will want to insert this data somewhere
+                }
+                $('#recordBtn').before(output);
+            }
+            
+            function onCaptureError(error){
+                var errMessage;
+                switch(error.code){
+                    case 0:
+                        errMsg = 'Mic failed to record';
+                        break;
+                    case 1:
+                        errMsg = 'Recording app is currently busy';
+                        break;
+                    case 2:
+                        errMsg = 'Invalid Paramter';
+                        break;
+                    case 3:
+                        errMsg = 'App was existed before recording was complete';
+                        break;
+                    case 4:
+                        errMsg = 'Device does not support audio capture request';
+                        break;
+                }
+                alert('Error: ' +errMsg);
+            }
+            
+        </script>
+    </head>
+    <body>
+        <button id="recordBtn">Record </button>
+    </body>
+</html>
